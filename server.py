@@ -181,11 +181,6 @@ def _print(msg):
 
 
 if __name__ == "__main__":
-    # server = Server(token="/BWiTS+GJ75q+uhHN1ZIS4TtyqPUzUabvfbaFrubFIr5tdsmc8LCjC1vsTF9DOaHOHFdjp/sEdc1AS99w0Irhi9uySdScM3uPjWaqEuxeZWhHkTcmstx7by1Kratc4wKoP6onYHc4Hwhe/zlNy4BXwdB04t89/1O/w1cDnyilFU=", 
-    #                 secret="3ebd1e2a871d1ae69043c6973b4080b4",
-    #                 port=8000,
-    #                 url=None
-    #                 )
     server = Server(token="D8I69TjO5K8ne0oFnRn2CA6d3iIP8qd+rL2jtSuWPBgmPLbn9ZsAwVrGkYts6SeVigU3MtzTbzvm0RihxGJdXVOoko72ZmcOgoX96IVbdpJpIHySWeJj7GUH+fY7JVeN5N49Ow1oIjHDPcD8we5f3QdB04t89/1O/w1cDnyilFU=",
                     secret="c36cb258c48e9a3a747acd946dd72b21",)
     server.run()
