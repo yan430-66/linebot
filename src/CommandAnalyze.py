@@ -1,6 +1,7 @@
 # from stt.stt import stt
 # from tts.tts import tts
 # from .dw import dw
+from .color import C, W
 from .sentiment import Sentiment
 class Command():
     def __init__(self, ):
@@ -86,7 +87,7 @@ class CommandAnalysiser(Command):
 
     
 def _print(msg):
-    print(f'[DeBug] [Analysiser] | {msg}')
+    print(f'{W}[DeBug] [Analysiser] | {msg}{W}')
         
 if __name__ == "__main__":
     ca = CommandAnalysiser()

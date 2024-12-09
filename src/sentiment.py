@@ -1,10 +1,4 @@
-import os
-import pandas as pd
-import numpy as np
-import jieba
-import re
-from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
-from sklearn.naive_bayes import MultinomialNB
+from src.color import C, W
 import joblib
 
 class Sentiment():

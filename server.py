@@ -4,7 +4,8 @@ import requests
 import subprocess
 import threading
 import gradio as gr
-from webui import webui
+from src.color import C, W
+# from webui import webui
 from src import CommandAnalyze
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
@@ -13,22 +14,7 @@ from fastapi import FastAPI, Request, HTTPException, APIRouter
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 
-C = {
-    'green': '\033[92m',
-    'red': '\033[91m',
-    'yellow': '\033[93m',
-    'blue': '\033[94m',
-    'magenta': '\033[95m',
-    'cyan': '\033[96m',
-    'white': '\033[97m',
-    'black': '\033[30m',
-    'grey': '\033[90m',
-    'bright_red': '\033[91;1m',
-    'bright_green': '\033[92;1m'
-}
-W = '\033[0m'
-
-class Server(webui, CommandAnalyze.CommandAnalysiser):
+class Server(CommandAnalyze.CommandAnalysiser):
     def __init__(self, 
                  token: str, 
                  secret: str,
@@ -93,18 +79,6 @@ class Server(webui, CommandAnalyze.CommandAnalysiser):
             _print(f"{C['red']}Error getting ngrok URL: {e}{W}")
             _print(f"{C['yellow']}Starting ngrok...{W}")
             return None
-        
-    def send_message(self, message):
-        self.line_bot_api.broadcast(TextSendMessage(text=message))
-
-    def reply_message(self, reply_token, message):
-        self.line_bot_api.reply_message(reply_token, TextSendMessage(text=message))
-
-    def reply_image(self, reply_token, image_path):
-        self.line_bot_api.reply_message(reply_token, ImageSendMessage(original_content_url=image_path, preview_image_url=image_path))
-
-    def send_image(self, image_path):
-        self.line_bot_api.broadcast(ImageSendMessage(original_content_url=image_path, preview_image_url=image_path))
 
     def set_routes(self):
         @self.app.post("/callback")
@@ -130,7 +104,6 @@ class Server(webui, CommandAnalyze.CommandAnalysiser):
             else:
                 self.reply_image(event.reply_token, response[1])
 
-
         @self.handler.add(MessageEvent, message=ImageMessage)
         def handle_image_message(event):
             import tempfile
@@ -150,7 +123,6 @@ class Server(webui, CommandAnalyze.CommandAnalysiser):
             # 將 Gradio 應用嵌入到 FastAPI 的 HTML 中
             return 'Gradio app is running at /gradio', 200
         
-
     def update_line_webhook_url(self, new_url):
         try:
             headers = {
@@ -171,6 +143,18 @@ class Server(webui, CommandAnalyze.CommandAnalysiser):
                 _print(f"{C['red']}Failed to update LINE Webhook URL: {response.status_code}, {response.text}{W}")
         except Exception as e:
             _print(f"{C['red']}Error updating LINE Webhook URL: {e}{W}")
+
+    def send_message(self, message):
+        self.line_bot_api.broadcast(TextSendMessage(text=message))
+
+    def reply_message(self, reply_token, message):
+        self.line_bot_api.reply_message(reply_token, TextSendMessage(text=message))
+
+    def reply_image(self, reply_token, image_path):
+        self.line_bot_api.reply_message(reply_token, ImageSendMessage(original_content_url=image_path, preview_image_url=image_path))
+
+    def send_image(self, image_path):
+        self.line_bot_api.broadcast(ImageSendMessage(original_content_url=image_path, preview_image_url=image_path))
 
     def run(self):
         uvicorn.run(self.app, host="127.0.0.1", port=self.port)
