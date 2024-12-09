@@ -42,5 +42,4 @@ class webui(object):
         return "Configuration saved!"
 
     def start_debugui(self):
-        print(f"{C['cyan']}Running in debug mode...{W}")
         self.gr_interface.launch(server_port=4521)
