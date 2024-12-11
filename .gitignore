@@ -5,3 +5,4 @@ cfg.yaml
 ngrok.exe
 static/*.jpg
 static/*.png
+logs/*.log
