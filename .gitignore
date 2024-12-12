@@ -1,7 +1,7 @@
 venv/
 __pycache__/
 *.pyc
-cfg.yaml
+cfg1.yaml
 ngrok.exe
 static/*.jpg
 static/*.png
