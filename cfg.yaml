@@ -1,0 +1,4 @@
+port: 8000
+secret: LINE CHANNEL SECRET
+token: LINE CHANNEL ACCESS TOKEN
+url: null

@@ -84,10 +84,9 @@ class CommandAnalysiser(Command):
         except Exception as e:
             return 'msg', f'Error: {e}'
         
-
-    
-def _print(msg):
-    print(f'{W}[DeBug] [Analysiser] | {msg}{W}')
+def _print(msg: str = '',
+           state: str = C['inf'],):
+    print(f"{W}{state} [Analysiser] | {msg}{W}")
         
 if __name__ == "__main__":
     ca = CommandAnalysiser()

@@ -9,6 +9,15 @@ C = {
     'black': '\033[30m',
     'grey': '\033[90m',
     'bright_red': '\033[91;1m',
-    'bright_green': '\033[92;1m'
+    'bright_green': '\033[92;1m',
+    'bright_blue': '\033[94;1m',
+    'bright_magenta': '\033[95;1m',
+    'bright_cyan': '\033[96;1m',
+    'bright_yellow': '\033[93;1m',
+    'dark_red': '\033[31m',
+    'warn': '\033[93;1m[WARNING]',
+    'err': '\033[91;1m[ERROR]',
+    'suc': '\033[92;1m[SUCCESS]',
+    'inf': '\033[0m[INFO]\033[0m',
 }
 W = '\033[0m'
