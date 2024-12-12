@@ -8,7 +8,7 @@ import argparse
 import uvicorn.server
 import sys
 from src.color import C, W
-from logs.log import Logger
+from logs.log import Logger, log_pth
 from src import CommandAnalyze
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
@@ -23,7 +23,13 @@ class Server(CommandAnalyze.CommandAnalysiser):
                  secret: str,
                  url: str = None,
                  port: int = 8000,
-                 server_log: str = None):
+                 server_log: str | bool= None):
+        if server_log:
+            pth = log_pth()
+            _print(f"Server log {C['dark_blue']}:{pth}{W}, will save log", C['inf'])
+            sys.stdout = Logger(pth)
+        elif args.L is None:
+            _print(f"log option is {C['dark_blue']}None{W}, will not save log", C['inf'])
         super().__init__()
         super(CommandAnalyze.CommandAnalysiser, self).__init__()
         self.token = token
@@ -146,8 +152,8 @@ class Server(CommandAnalyze.CommandAnalysiser):
                 _print(f"{C['yellow']}Exiting...{W}")
                 sys.exit(-1)
         except Exception as e:
-            _print(f"{C['yellow']}Exiting...{W}")
             _print(f"{C['red']}Error updating LINE Webhook URL: {e}{W}",state=C['err'])
+            _print(f"{C['yellow']}Exiting...{W}")
             sys.exit(-1)
 
     def send_message(self, message):
@@ -182,8 +188,10 @@ if __name__ == "__main__":
     parser.add_argument('-L', type=str, help='log file', default=None)
     parser.add_argument('-ngrok', type=str, help='ngrok url if opened', default=None)
     args = parser.parse_args()
-    sys.stdout = Logger(args.L)
-    _print(' ')
+    if args.L is not None and type(args.L) == str:
+        _print(f'{C["dark_blue"]}{args.L}{W}', C['inf'])
+        sys.stdout = Logger(args.L)
+    print(' ')
     _print('Server initializing...', C['inf'])
     server = Server(token=args.T, secret=args.S, port=args.P, url=args.ngrok, server_log=args.L)
     server.run()

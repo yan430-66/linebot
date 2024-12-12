@@ -8,16 +8,18 @@ from gradio_log import Log
 from src.color import C, W
 from logs.log import Logger, WEB_LOG, log_pth
 
-sys.stdout = Logger(WEB_LOG)
+
 SERVER_LOG = log_pth()
 
 class webui(object):
     def __init__(self):
+        sys.stdout = Logger(WEB_LOG)
         self.server_state = "Stop"  
         self.server_thread = None
         # config path
         self.file_path = "./cfg.yaml"
         self.create_config()
+
         self.config = self.load_config()
         
         with gr.Blocks(css="#server-log-comp-id {min-height: 200px; max-height: 800px}") as self.gr_interface:
@@ -103,6 +105,8 @@ class webui(object):
             loaded_config = yaml.safe_load(yaml_file)
             # _print(f"讀取到的配置:{C['cyan']}{loaded_config}", C['inf'])
         _print("Loaded configuration")
+        if loaded_config["token"] == "LINE CHANNEL ACCESS TOKEN" or loaded_config["secret"] == "LINE CHANNEL SECRET":
+            _print("You should edit the configuration file before starting the server.", C['warn'])
         return loaded_config
     
     def update_config(self):

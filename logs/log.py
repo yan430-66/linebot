@@ -1,9 +1,9 @@
 import sys
 from datetime import datetime
 WEB_LOG = f"logs/{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}_web.log"
-# WEB_LOG = f"logs/web.log"
 SERVER_LOG = f"logs/{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}_server.log"
-# SERVER_LOG = f"logs/server.log"
+# WEB_LOG = f"logs/test_web.log"
+# SERVER_LOG = f"logs/test_server.log"
 def log_pth():
     server_log = open(SERVER_LOG, "w", encoding="utf-8")
     server_log.write(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} | Server log\n")

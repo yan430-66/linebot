@@ -15,6 +15,8 @@ C = {
     'bright_cyan': '\033[96;1m',
     'bright_yellow': '\033[93;1m',
     'dark_red': '\033[31m',
+    'dark_green': '\033[32m',
+    'dark_blue': '\033[34m',
     'warn': '\033[93;1m[WARNING]',
     'err': '\033[91;1m[ERROR]',
     'suc': '\033[92;1m[SUCCESS]',
