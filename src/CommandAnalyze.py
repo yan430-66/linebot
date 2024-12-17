@@ -1,6 +1,3 @@
-# from stt.stt import stt
-# from tts.tts import tts
-# from .dw import dw
 from .color import C, W
 from .sentiment import Sentiment
 class Command():
@@ -15,8 +12,7 @@ class Command():
             '/?': [self.help, "discrisption of help"],
             '/nserch': [self.nserch, "serch nhentai.net by code"],
             '/ns': [self.nserch, "serch nhentai.net by code"],
-            '1': [self.chosise_1, "test command"],
-            # '/dw': [self.dw.generate_image, "generate image"],
+            '1': [self.chosise_1, "sentiment command"],
                    }
         
         self.cmd_list = list(self.cmd_dic.keys())
@@ -43,7 +39,7 @@ class Command():
     def help(self, ):
         res = ''
         for k, v in self.cmd_dic.items():
-            res += f'Command: {k} | {v[1]}\n'
+            res += f'Command description{k} | {v[1]}\n'
             res += '\n'
         return 'msg', res
 
@@ -55,11 +51,11 @@ class CommandAnalysiser(Command):
         cmd_text = cmd_text.strip()
         _print(cmd_text)
         cmd_text, *args = cmd_text.split(' ')
-        _print(f'cmd_text: {cmd_text}, args: {args}')
+        _print(f'cmd_text: {cmd_text}, input args: {args}')
         if cmd_text in self.cmd_list:
             return self.execute(cmd_text, *args)
         else:
-            raise Exception('unknown command')
+            raise Exception(f'Command not found: {cmd_text}')
     
     def execute(self, text: str, *args):
         ex = self.cmd_dic[text][0]
@@ -70,9 +66,10 @@ class CommandAnalysiser(Command):
             else:
                 return ex()   
         except Exception as e:
-            return f'Error: {e}'
+            return 'err' f'Error: {e}'
         
-    def run_analyze(self, cmd_text: str, user_id: str):
+    def run_analyze(self, cmd_text: str
+                        , user_id: str):
         self.user_id = user_id
         try:
             if self.user_id in self.user_state:
@@ -82,7 +79,7 @@ class CommandAnalysiser(Command):
             else:
                 return self.analyze(cmd_text)
         except Exception as e:
-            return 'msg', f'Error: {e}'
+            return 'err', f'Error: {e}'
         
 def _print(msg: str = '',
            state: str = C['inf'],):

@@ -39,7 +39,7 @@ if __name__ == "__main__":
         if args.outputlog:
             server = start(token=args.T, secret=args.S, port=args.P, url=args.ngrok, server_log=args.outputlog)
         else:
-            server = start(token=args.T, secret=args.S, port=args.P, url=args.ngrok,)
+            server = start(token=args.T, secret=args.S, port=args.P, url=args.ngrok, azure=args.azure)
         
         server.run()
 

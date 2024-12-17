@@ -6,17 +6,15 @@ import threading
 import subprocess
 from gradio_log import Log
 from src.color import C, W
-from logs.log import Logger, WEB_LOG, log_pth
+from logs.log import Logger, WEB_LOG, SERVER_LOG, log_pth
 
-
-SERVER_LOG = log_pth()
 
 class webui(object):
     def __init__(self):
+        SERVER_LOG = log_pth()
         sys.stdout = Logger(WEB_LOG)
         self.server_state = "Stop"  
         self.server_thread = None
-        # config path
         self.file_path = "./cfg.yaml"
         self.create_config()
 
@@ -41,7 +39,6 @@ class webui(object):
 
                 with gr.Column():
                     gr.Markdown("### Server狀態: ")
-                    # self.server_state_text = gr.Textbox(label="Server狀態:DEBUG MODE, Stoped", value=self.server_state, interactive=False)
                     self.server_log = Log(SERVER_LOG, dark=True, xterm_font_size=18, every=0.3, elem_id="server-log-comp-id", height=300)              
     
             with gr.Column():
@@ -76,13 +73,11 @@ class webui(object):
             self.stop_btn.click(
                 self.stop_server,
                 outputs=[self.web_log, self.server_log, self.reload_html],
-                # js='window.location.reload()' 
             )
 
             self.restart_btn.click(
                 self.restart_server,
                 outputs=[self.web_log,],
-                # js='window.location.reload()' 
             )
 
             _print(f"WebUI initialized")
@@ -103,7 +98,6 @@ class webui(object):
     def load_config(self):
         with open(self.file_path, "r", encoding="utf-8") as yaml_file:
             loaded_config = yaml.safe_load(yaml_file)
-            # _print(f"讀取到的配置:{C['cyan']}{loaded_config}", C['inf'])
         _print("Loaded configuration")
         if loaded_config["token"] == "LINE CHANNEL ACCESS TOKEN" or loaded_config["secret"] == "LINE CHANNEL SECRET":
             _print("You should edit the configuration file before starting the server.", C['warn'])
@@ -138,25 +132,25 @@ class webui(object):
     def start_line_server(self):
         python_path = sys.executable
         self.server_process = subprocess.Popen([
-            python_path, 'server.py', 
+            python_path, './server.py', 
             '-T', self.token.value, 
             '-S', self.secret.value, 
             '-P', str(self.port.value), 
             '-L', SERVER_LOG
         ])
         self.server_process.wait()
-        _print(f'Server Stoped', C['warn'])
+        print(f'{C["warn"]} [WebUi] | Server Stoped')
         self.server_state = "Stop"
 
     def stop_server(self):
         res, html = self.refresh_log()
 
-        if self.server_state == "Running" and not self.server_thread.is_alive():
+        if self.server_state == "Running" :
             self.server_process.terminate()
-            # _print(self.server_thread.is_alive())
             self.server_state = "Stop"
             _print(f'Server stopped', C['inf'])
             self.server_log.log_file = log_pth()
+            self.server_process = None
 
             return f"{W}{C['inf']} [WebUi] | Server stopped{W}\n", res, html
         else:

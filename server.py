@@ -24,12 +24,17 @@ class Server(CommandAnalyze.CommandAnalysiser):
                  url: str = None,
                  port: int = 8000,
                  server_log: str | bool= None):
-        if server_log:
+        
+        if server_log and type(server_log) != str:
             pth = log_pth()
             _print(f"Server log {C['dark_blue']}:{pth}{W}, will save log", C['inf'])
             sys.stdout = Logger(pth)
+        elif server_log and type(server_log) == str:
+            _print(f"Server log {C['dark_blue']}:{server_log}{W}, will save log", C['inf'])
+            sys.stdout = Logger(server_log)
         elif args.L is None:
             _print(f"log option is {C['dark_blue']}None{W}, will not save log", C['inf'])
+
         super().__init__()
         super(CommandAnalyze.CommandAnalysiser, self).__init__()
         self.token = token
@@ -113,8 +118,12 @@ class Server(CommandAnalyze.CommandAnalysiser):
             if response[0] == 'msg':
                 _print(f"Replying with message: {response[1]}")
                 self.reply_message(event.reply_token, response[1])
-            else:
+            elif response[0] == 'img':
                 self.reply_image(event.reply_token, response[1])
+            elif response[0] == 'err':
+                _print(f"{response[1]}", state=C['err'])
+            else:
+                _print(f"Unknown response type: {response[0]}", state=C['err'])
 
         @self.handler.add(MessageEvent, message=ImageMessage)
         def handle_image_message(event):
