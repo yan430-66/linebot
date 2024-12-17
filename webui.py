@@ -7,12 +7,13 @@ import subprocess
 from gradio_log import Log
 from src.color import C, W
 from logs.log import Logger, WEB_LOG, SERVER_LOG, log_pth
-#####################################
-##  新增cfg選項要按照格式
-##  頁面顯示要記得改 line 29 以下的部分
-##  self.save_cfg_btn.click input 要改
-##  self.load_cfg_btn.click output 要改
 
+###########################################
+##  新增cfg選項要按照格式                   
+##  頁面顯示要記得改 line 29 以下的部分     
+##  self.save_cfg_btn.click input 要改     
+##  self.load_cfg_btn.click output 要改    
+###########################################
 
 class webui(object):
     def __init__(self):
