@@ -7,6 +7,7 @@ import uvicorn.config
 import argparse
 import uvicorn.server
 import sys
+import yaml
 from src.color import C, W
 from logs.log import Logger, log_pth
 from src import CommandAnalyze
@@ -19,12 +20,9 @@ from fastapi.staticfiles import StaticFiles
 
 class Server(CommandAnalyze.CommandAnalysiser):
     def __init__(self, 
-                 token: str, 
-                 secret: str,
-                 url: str = None,
-                 port: int = 8000,
-                 server_log: str | bool= None):
-        
+                 config_path: str = './cfg.yaml',
+                 server_log: str | bool = None):
+        self.load_cfg(config_path)
         if server_log and type(server_log) != str:
             pth = log_pth()
             _print(f"Server log {C['dark_blue']}:{pth}{W}, will save log", C['inf'])
@@ -32,23 +30,26 @@ class Server(CommandAnalyze.CommandAnalysiser):
         elif server_log and type(server_log) == str:
             _print(f"Server log {C['dark_blue']}:{server_log}{W}, will save log", C['inf'])
             sys.stdout = Logger(server_log)
-        elif args.L is None:
+        elif server_log is None:
             _print(f"log option is {C['dark_blue']}None{W}, will not save log", C['inf'])
 
         super().__init__()
         super(CommandAnalyze.CommandAnalysiser, self).__init__()
-        self.token = token
-        self.secret = secret
+        self.token = self.args.token
+        self.secret = self.args.secret
 
-        self.line_bot_api = LineBotApi(token)
-        self.handler = WebhookHandler(secret)
+        self.line_bot_api = LineBotApi(self.token)
+        self.handler = WebhookHandler(self.secret)
 
-        self.port = port
-        url = self.get_ngrok_url()
-        if url is not None:
-            self.ngrok_url = url
-            _print(f"ngrok URL: {C['cyan']}{self.ngrok_url}{W}")
-            self.update_line_webhook_url(self.ngrok_url)
+        self.port = self.args.port
+        if self.args.url is None:
+            url = self.get_ngrok_url()
+            if url is not None:
+                self.ngrok_url = url
+                _print(f"ngrok URL: {C['cyan']}{self.ngrok_url}{W}")
+                self.update_line_webhook_url(self.ngrok_url)
+            else:
+                self.set_ngrok()
         else:
             self.set_ngrok()
         
@@ -61,9 +62,8 @@ class Server(CommandAnalyze.CommandAnalysiser):
         _print(f"Server initialized", C['suc'])
         
     def set_ngrok(self,):
-        t = threading.Thread(target=self.start_ngork)
-        t.start()
-
+        self.start_ngork()
+        
         self.ngrok_url = self.get_ngrok_url()
 
         if self.ngrok_url is not None:
@@ -74,9 +74,11 @@ class Server(CommandAnalyze.CommandAnalysiser):
             os._exit(1)
 
     def start_ngork(self):
+        _print(f"{C['yellow']}Starting ngrok...{W}")
         try:
-            subprocess.run(['src/ngrok.exe', 'http', str(self.port)], stdout=subprocess.PIPE).stdout.decode('utf-8')
-            _print(f"{C['bright_green']}Ngrok started{W}")
+            self.ngrok_process = subprocess.Popen(['src/ngrok.exe', 'http', str(self.port)], stdout=subprocess.PIPE)
+            # subprocess.run(['src/ngrok.exe', 'http', str(self.port)], stdout=subprocess.PIPE).stdout.decode('utf-8')
+            print(f"{W}{C['suc']} [Server] | Ngrok started{W}")
         except FileNotFoundError as e:
             _print(f"{C['red']}File not found error: {e}")
             _print(f"{C['red']}Please download ngrok and place it in the src folder{W}") 
@@ -93,8 +95,37 @@ class Server(CommandAnalyze.CommandAnalysiser):
             return public_url
         except Exception as e:
             _print(f"{C['red']}Error getting ngrok URL: {e}{W}", state=C['err'])
-            _print(f"{C['yellow']}Starting ngrok...{W}")
             return None
+        
+    def update_line_webhook_url(self, new_url):
+        try:
+            headers = {
+                "Authorization": f"Bearer {self.token}",
+                "Content-Type": "application/json"
+            }
+            data = {
+                "endpoint": f"{new_url}/callback"
+            }
+            response = requests.put(
+                "https://api.line.me/v2/bot/channel/webhook/endpoint",
+                headers=headers,
+                json=data
+            )
+            if response.status_code == 200:
+                _print(f"{C['green']}LINE Webhook URL updated successfully{W}",state=C['suc'])
+            else:
+                _print(f"{C['dark_red']}Failed to update LINE Webhook URL: {response.status_code}, {response.text}{W}", state=C['err'])
+                _print(f"{C['yellow']}Please check your LINE Channel Access Token and Secret{W}", state=C['warn'])
+                _print(f"{C['yellow']}Exiting...{W}")
+                if self.ngrok_process is not None:
+                    self.ngrok_process.terminate()
+                sys.exit()
+        except Exception as e:
+            if self.ngrok_process is not None:
+                    self.ngrok_process.terminate()
+            _print(f"{C['red']}Error updating LINE Webhook URL: {e}{W}",state=C['err'])
+            _print(f"{C['yellow']}Exiting...{W}")
+            sys.exit()
 
     def set_routes(self):
         @self.app.post("/callback")
@@ -138,32 +169,6 @@ class Server(CommandAnalyze.CommandAnalysiser):
             image_url = f'{self.ngrok_url}/images/{os.path.basename(tempfile_path)}'
             
             self.reply_image(event.reply_token, image_url)
-        
-    def update_line_webhook_url(self, new_url):
-        try:
-            headers = {
-                "Authorization": f"Bearer {self.token}",
-                "Content-Type": "application/json"
-            }
-            data = {
-                "endpoint": f"{new_url}/callback"
-            }
-            response = requests.put(
-                "https://api.line.me/v2/bot/channel/webhook/endpoint",
-                headers=headers,
-                json=data
-            )
-            if response.status_code == 200:
-                _print(f"{C['green']}LINE Webhook URL updated successfully{W}",state=C['suc'])
-            else:
-                _print(f"{C['dark_red']}Failed to update LINE Webhook URL: {response.status_code}, {response.text}{W}", state=C['err'])
-                _print(f"{C['yellow']}Please check your LINE Channel Access Token and Secret{W}", state=C['warn'])
-                _print(f"{C['yellow']}Exiting...{W}")
-                sys.exit(-1)
-        except Exception as e:
-            _print(f"{C['red']}Error updating LINE Webhook URL: {e}{W}",state=C['err'])
-            _print(f"{C['yellow']}Exiting...{W}")
-            sys.exit(-1)
 
     def send_message(self, message):
         self.line_bot_api.broadcast(TextSendMessage(text=message))
@@ -176,6 +181,11 @@ class Server(CommandAnalyze.CommandAnalysiser):
 
     def send_image(self, image_path):
         self.line_bot_api.broadcast(ImageSendMessage(original_content_url=image_path, preview_image_url=image_path))
+
+    def load_cfg(self, config_path):
+        config = yaml.load(open(config_path, 'r', encoding='UTF-8'), Loader=yaml.FullLoader)
+        self.args = argparse.Namespace(**config)
+        print('[Debug] [main] | cfg loaded.')
 
     def run(self):
         uvicorn.run(self.app, host="127.0.0.1", port=self.port, log_level="info")
@@ -191,16 +201,13 @@ if __name__ == "__main__":
     #                 secret="c36cb258c48e9a3a747acd946dd72b21",)
     # server.run()
     parser = argparse.ArgumentParser()
-    parser.add_argument('-T', type=str, help='LINE CHANNEL ACCESS TOKEN',)
-    parser.add_argument('-S', type=str, help='LINE CHANNEL SECRET', )
-    parser.add_argument('-P', type=int, help='PORT', default=8000)
+    parser.add_argument('-cfg', type=str, help='cfg path ', default='./cfg.yaml')
     parser.add_argument('-L', type=str, help='log file', default=None)
-    parser.add_argument('-ngrok', type=str, help='ngrok url if opened', default=None)
     args = parser.parse_args()
     if args.L is not None and type(args.L) == str:
         _print(f'{C["dark_blue"]}{args.L}{W}', C['inf'])
         sys.stdout = Logger(args.L)
     print(' ')
     _print('Server initializing...', C['inf'])
-    server = Server(token=args.T, secret=args.S, port=args.P, url=args.ngrok, server_log=args.L)
+    server = Server(config_path=args.cfg, server_log=args.L)
     server.run()

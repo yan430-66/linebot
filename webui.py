@@ -7,6 +7,11 @@ import subprocess
 from gradio_log import Log
 from src.color import C, W
 from logs.log import Logger, WEB_LOG, SERVER_LOG, log_pth
+#####################################
+##  新增cfg選項要按照格式
+##  頁面顯示要記得改 line 29 以下的部分
+##  self.save_cfg_btn.click input 要改
+##  self.load_cfg_btn.click output 要改
 
 
 class webui(object):
@@ -17,16 +22,17 @@ class webui(object):
         self.server_thread = None
         self.file_path = "./cfg.yaml"
         self.create_config()
-
-        self.config = self.load_config()
         
         with gr.Blocks(css="#server-log-comp-id {min-height: 200px; max-height: 800px}") as self.gr_interface:
+            self.config = self.load_config()
             self.reload_html = gr.HTML()
             with gr.Row():
                 with gr.Column():
                     gr.Markdown("### 設定區")
                     self.token = gr.Textbox(label="LINE CHANNEL ACCESS TOKEN", placeholder="LINE CHANNEL ACCESS TOKEN", value=self.config["token"], interactive=True)
                     self.secret = gr.Textbox(label="LINE CHANNEL SECRET", placeholder="LINE CHANNEL SECRET", value=self.config["secret"], interactive=True)
+                    self.azure_endpoint = gr.Textbox(label="Azure Endpoint", placeholder="Azure Endpoint", value=self.config["azure_endpoint"], interactive=True)
+                    self.azure_key = gr.Textbox(label="Azure API KEY", placeholder="Azure API", value=self.config["azure_key"], interactive=True)
                     self.url = gr.Textbox(label="ngrok URL", placeholder="URL", value=self.config["url"], interactive=True)
                     self.port = gr.Number(label="Port:", value=self.config["port"], interactive=True)
                     
@@ -56,12 +62,12 @@ class webui(object):
 
             self.load_cfg_btn.click(
                 self.update_config, 
-                outputs=[self.token, self.secret, self.port, self.url]
+                outputs=[self.token, self.secret, self.port, self.url, self.azure_endpoint, self.azure_key],
             )
 
             self.save_cfg_btn.click(
                 self.save_config,
-                inputs=[self.token, self.secret, self.port, self.url], 
+                inputs=[self.token, self.secret, self.port, self.url, self.azure_endpoint, self.azure_key], 
                 outputs=self.web_log,  
             )
 
@@ -89,7 +95,12 @@ class webui(object):
     
     def create_config(self):
         if not os.path.exists(self.file_path):
-            default_config = {"token": f"'LINE CHANNEL ACCESS TOKEN'", "secret": f"'LINE CHANNEL SECRET'", "port": 8000, "url" : None}
+            default_config = {"token": f"LINE CHANNEL ACCESS TOKEN", 
+                            "secret": f"LINE CHANNEL SECRET",
+                            "azure_endpoint" : "azure endpoint",
+                            "azure_key" : "AZURE API KEY",
+                            "port": 8000,
+                            "url" : None}
             with open(self.file_path, "w", encoding="utf-8") as yaml_file:
                 yaml.dump(default_config, yaml_file, default_flow_style=False, allow_unicode=True)
             _print(state=C['suc'], msg=f"Configuration created!")
@@ -105,13 +116,15 @@ class webui(object):
     
     def update_config(self):
         self.config = self.load_config()
-        return self.config["token"], self.config["secret"], self.config["port"], self.config["url"]
+        return self.config["token"], self.config["secret"], self.config["port"], self.config["url"], self.config["azure_endpoint"], self.config["azure_key"]
     
-    def save_config(self, token, secret, port, url):
+    def save_config(self, token, secret, port, url, azure_endpoint, azure_key):
         self.config["token"] = token
         self.config["secret"] = secret
         self.config["port"] = port
         self.config["url"] = url
+        self.config["azure_endpoint"] = azure_endpoint
+        self.config["azure_key"] = azure_key
         _print(f"Configuration updated: {secret}", C['inf'])
         with open(self.file_path, "w", encoding="utf-8") as yaml_file:
             yaml.dump(self.config, yaml_file, default_flow_style=False, allow_unicode=True)
@@ -133,9 +146,7 @@ class webui(object):
         python_path = sys.executable
         self.server_process = subprocess.Popen([
             python_path, './server.py', 
-            '-T', self.token.value, 
-            '-S', self.secret.value, 
-            '-P', str(self.port.value), 
+            '-cfg', self.file_path, 
             '-L', SERVER_LOG
         ])
         self.server_process.wait()

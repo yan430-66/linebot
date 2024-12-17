@@ -4,10 +4,7 @@ from webui import webui
 import argparse
 class start(Server, webui):
     def __init__(self,
-                 token: str = None, 
-                 secret: str = None, 
-                 port: int = 8000, 
-                 url: str = None, 
+                 config_path: str = './cfg.yaml',
                  debug=False,
                  server_log: str | bool= None):
        
@@ -15,31 +12,25 @@ class start(Server, webui):
             print(f"{C['cyan']}Running in debug mode...{W}",)
             webui.__init__(self, )
         else:
-            super().__init__(token=token, secret=secret, port=port, url=url, server_log=server_log)
+            super().__init__(config_path=config_path, server_log=server_log)
 
 if __name__ == "__main__":
     # sys.stdout = Logger(FILE_NAME)
     parser = argparse.ArgumentParser()
     parser.add_argument('-debug', action='store_true', help='open in debug mode',)
-    parser.add_argument('-T', type=str, help='LINE CHANNEL ACCESS TOKEN', required=False)
-    parser.add_argument('-S', type=str, help='LINE CHANNEL SECRET', required=False)
-    parser.add_argument('-P', type=int, help='PORT', default=8000)
+    parser.add_argument('-cfg', type=str, help='cfg path ', default='./cfg.yaml')
     parser.add_argument('--outputlog', action='store_true', help='log file',)
-    parser.add_argument('-ngrok', type=str, help='ngrok url if opened', default=None)
     args = parser.parse_args()
 
     if args.debug:
         server = start(debug=args.debug,)
         server.start_debugui()
     else:
-        if not args.T or not args.S:
-            raise ValueError("LINE CHANNEL ACCESS TOKEN (-T) and SECRET (-S) are required unless running in debug mode.")
-        
         # Normal server start
         if args.outputlog:
-            server = start(token=args.T, secret=args.S, port=args.P, url=args.ngrok, server_log=args.outputlog)
+            server = start(config_path=args.cfg, server_log=args.outputlog)
         else:
-            server = start(token=args.T, secret=args.S, port=args.P, url=args.ngrok, azure=args.azure)
+            server = start(config_path=args.cfg)
         
         server.run()
 
