@@ -120,8 +120,8 @@ class Server(CommandAnalyze.CommandAnalysiser):
                 self.reply_message(event.reply_token, response[1])
             elif response[0] == 'img':
                 self.reply_image(event.reply_token, response[1])
-            elif response[0] == 'err':
-                _print(f"{response[1]}", state=C['err'])
+            elif response[0] in ['err', 'warn']:
+                _print(f"{response[1]}", state=C[response[0]])
             else:
                 _print(f"Unknown response type: {response[0]}", state=C['err'])
 
