@@ -21,5 +21,6 @@ C = {
     'err': '\033[91;1m[ERROR]',
     'suc': '\033[92;1m[SUCCESS]',
     'inf': '\033[0m[INFO]\033[0m',
+    'de': '\033[96m[DEBUGER]',
 }
 W = '\033[0m'

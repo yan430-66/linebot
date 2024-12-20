@@ -9,19 +9,21 @@ from src.color import C, W
 from logs.log import Logger, WEB_LOG, SERVER_LOG, log_pth
 
 ###########################################
-##  新增cfg選項要按照格式                   
+##  新增cfg選項要按照格式
+##  default_config 要改                
 ##  頁面顯示要記得改 line 29 以下的部分     
 ##  self.save_cfg_btn.click input 要改     
 ##  self.load_cfg_btn.click output 要改    
 ###########################################
 
 class webui(object):
-    def __init__(self):
+    def __init__(self, 
+                 config_path: str = "./cfg.yaml"):
         SERVER_LOG = log_pth()
         sys.stdout = Logger(WEB_LOG)
         self.server_state = "Stop"  
         self.server_thread = None
-        self.file_path = "./cfg.yaml"
+        self.cfg_path = config_path
         self.create_config()
         
         with gr.Blocks(css="#server-log-comp-id {min-height: 200px; max-height: 800px}") as self.gr_interface:
@@ -36,6 +38,7 @@ class webui(object):
                     self.azure_key = gr.Textbox(label="Azure API KEY", placeholder="Azure API", value=self.config["azure_key"], interactive=True)
                     self.url = gr.Textbox(label="ngrok URL", placeholder="URL", value=self.config["url"], interactive=True)
                     self.port = gr.Number(label="Port:", value=self.config["port"], interactive=True)
+                    self.weather_api = gr.Textbox(label="Weather API", value=self.config["weather_api"], placeholder="Weather API", interactive=True)
                     
                     # self.toggle = gr.Checkbox(label="啟用功能", elem_id="switch")
     
@@ -63,12 +66,12 @@ class webui(object):
 
             self.load_cfg_btn.click(
                 self.update_config, 
-                outputs=[self.token, self.secret, self.port, self.url, self.azure_endpoint, self.azure_key],
+                outputs=[self.token, self.secret, self.port, self.url, self.azure_endpoint, self.azure_key, self.weather_api],
             )
 
             self.save_cfg_btn.click(
                 self.save_config,
-                inputs=[self.token, self.secret, self.port, self.url, self.azure_endpoint, self.azure_key], 
+                inputs=[self.token, self.secret, self.port, self.url, self.azure_endpoint, self.azure_key, self.weather_api], 
                 outputs=self.web_log,  
             )
 
@@ -95,20 +98,21 @@ class webui(object):
         return '' 
     
     def create_config(self):
-        if not os.path.exists(self.file_path):
+        if not os.path.exists(self.cfg_path):
             default_config = {"token": f"LINE CHANNEL ACCESS TOKEN", 
                             "secret": f"LINE CHANNEL SECRET",
                             "azure_endpoint" : "azure endpoint",
                             "azure_key" : "AZURE API KEY",
                             "port": 8000,
-                            "url" : None}
-            with open(self.file_path, "w", encoding="utf-8") as yaml_file:
+                            "url" : None,
+                            "weather_api" : "Weather api from https://opendata.cwa.gov.tw"}
+            with open(self.cfg_path, "w", encoding="utf-8") as yaml_file:
                 yaml.dump(default_config, yaml_file, default_flow_style=False, allow_unicode=True)
             _print(state=C['suc'], msg=f"Configuration created!")
             _print("You should edit the configuration file before starting the server.", C['warn'])
     
     def load_config(self):
-        with open(self.file_path, "r", encoding="utf-8") as yaml_file:
+        with open(self.cfg_path, "r", encoding="utf-8") as yaml_file:
             loaded_config = yaml.safe_load(yaml_file)
         _print("Loaded configuration")
         if loaded_config["token"] == "LINE CHANNEL ACCESS TOKEN" or loaded_config["secret"] == "LINE CHANNEL SECRET":
@@ -117,17 +121,25 @@ class webui(object):
     
     def update_config(self):
         self.config = self.load_config()
-        return self.config["token"], self.config["secret"], self.config["port"], self.config["url"], self.config["azure_endpoint"], self.config["azure_key"]
+        return self.config["token"], self.config["secret"], self.config["port"], self.config["url"], self.config["azure_endpoint"], self.config["azure_key"], self.config["weather_api"]
     
-    def save_config(self, token, secret, port, url, azure_endpoint, azure_key):
+    def save_config(self, 
+                    token, 
+                    secret, 
+                    port, 
+                    url, 
+                    azure_endpoint, 
+                    azure_key, 
+                    weather_api,):
         self.config["token"] = token
         self.config["secret"] = secret
         self.config["port"] = port
         self.config["url"] = url
         self.config["azure_endpoint"] = azure_endpoint
         self.config["azure_key"] = azure_key
+        self.config["weather_api"] = weather_api
         _print(f"Configuration updated: {secret}", C['inf'])
-        with open(self.file_path, "w", encoding="utf-8") as yaml_file:
+        with open(self.cfg_path, "w", encoding="utf-8") as yaml_file:
             yaml.dump(self.config, yaml_file, default_flow_style=False, allow_unicode=True)
         _print(state=C['suc'], msg="Configuration saved!")
         return "\n"
@@ -147,7 +159,7 @@ class webui(object):
         python_path = sys.executable
         self.server_process = subprocess.Popen([
             python_path, './server.py', 
-            '-cfg', self.file_path, 
+            '-cfg', self.cfg_path, 
             '-L', SERVER_LOG
         ])
         self.server_process.wait()

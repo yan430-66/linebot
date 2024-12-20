@@ -10,12 +10,11 @@ class start(Server, webui):
        
         if debug: 
             print(f"{C['cyan']}Running in debug mode...{W}",)
-            webui.__init__(self, )
+            webui.__init__(self, config_path=config_path)
         else:
             super().__init__(config_path=config_path, server_log=server_log)
 
 if __name__ == "__main__":
-    # sys.stdout = Logger(FILE_NAME)
     parser = argparse.ArgumentParser()
     parser.add_argument('-debug', action='store_true', help='open in debug mode',)
     parser.add_argument('-cfg', type=str, help='cfg path ', default='./cfg.yaml')
@@ -23,7 +22,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.debug:
-        server = start(debug=args.debug,)
+        server = start(debug=args.debug, config_path=args.cfg)
         server.start_debugui()
     else:
         # Normal server start

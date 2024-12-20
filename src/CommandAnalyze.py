@@ -1,8 +1,12 @@
 from .color import C, W
 from .sentiment import Sentiment
+from .weather_api import Weather_clm
+
 class Command():
-    def __init__(self, ):
+    def __init__(self, 
+                 weather_api_key: str):
         self.user_state = {}
+        self.weather = Weather_clm(weather_api_key)
         self.se = Sentiment()
         self.cmd_dic = {
             '/test': [self.test, "discrisption of test"],
@@ -13,9 +17,20 @@ class Command():
             '/nserch': [self.nserch, "serch nhentai.net by code"],
             '/ns': [self.nserch, "serch nhentai.net by code"],
             '1': [self.chosise_1, "sentiment command"],
+            '/W': [self._weather, "get weather by region and area"],
                    }
         
         self.cmd_list = list(self.cmd_dic.keys())
+
+    def _weather(self, ):
+        self.user_state[self.user_id] = self._get_weather
+        res = 'msg', f'請輸入地區名稱'
+        return res
+
+    def _get_weather(self,
+                     region: str,
+                     area: str = None):
+        return self.weather.get_weather(region, area=area)  
 
     def chosise_1(self,):
         self.user_state[self.user_id] = self.sentiment
@@ -44,8 +59,10 @@ class Command():
         return 'msg', res
 
 class CommandAnalysiser(Command):
-    def __init__(self, ):
-        super().__init__()
+    def __init__(self, 
+                 weather_api_key: str):
+        super().__init__(self, 
+                         weather_api_key)
 
     def analyze(self, cmd_text: str): 
         cmd_text = cmd_text.strip()
@@ -59,14 +76,17 @@ class CommandAnalysiser(Command):
     
     def execute(self, text: str, *args):
         ex = self.cmd_dic[text][0]
-        _print(f'execute: {self.cmd_dic[text][1]}')
+        _print(f'command discrisption: {self.cmd_dic[text][1]}', state=C['de'])
         try:
             if len(args) > 0:
-                return ex(*args)
+                res = ex(*args)
+                _print(f'execute res: {res}')
+                return res
             else:
                 return ex()   
         except Exception as e:
-            return 'err' f'Error: {e}'
+            res = 'err', f'Error: {e}'
+            return res
         
     def run_analyze(self, cmd_text: str
                         , user_id: str):
@@ -75,11 +95,16 @@ class CommandAnalysiser(Command):
             if self.user_id in self.user_state:
                 fn = self.user_state[user_id]
                 del self.user_state[user_id]
-                return fn(cmd_text)
+                cmd_text, *args = cmd_text.split(' ')
+                if len(args) > 0:
+                    return fn(cmd_text, *args)
+                else:
+                    return fn(cmd_text)
             else:
                 return self.analyze(cmd_text)
         except Exception as e:
-            return 'err', f'Error: {e}'
+            res = 'err', f'Error: {e}'
+            return res
         
 def _print(msg: str = '',
            state: str = C['inf'],):

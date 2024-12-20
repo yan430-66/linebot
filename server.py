@@ -2,7 +2,6 @@ import os
 import uvicorn
 import requests
 import subprocess
-import threading
 import uvicorn.config
 import argparse
 import uvicorn.server
@@ -33,8 +32,8 @@ class Server(CommandAnalyze.CommandAnalysiser):
         elif server_log is None:
             _print(f"log option is {C['dark_blue']}None{W}, will not save log", C['inf'])
 
-        super().__init__()
-        super(CommandAnalyze.CommandAnalysiser, self).__init__()
+
+        super(CommandAnalyze.CommandAnalysiser, self).__init__(weather_api_key=self.args.weather_api)
         self.token = self.args.token
         self.secret = self.args.secret
 
@@ -155,6 +154,7 @@ class Server(CommandAnalyze.CommandAnalysiser):
                 _print(f"{response[1]}", state=C[response[0]])
             else:
                 _print(f"Unknown response type: {response[0]}", state=C['err'])
+                _print(f"Response: {response[1]}", state=C['err'])
 
         @self.handler.add(MessageEvent, message=ImageMessage)
         def handle_image_message(event):
@@ -197,9 +197,6 @@ def _print(msg: str = '',
 
 if __name__ == "__main__":
     
-    # server = Server(token="D8I69TjO5K8ne0oFnRn2CA6d3iIP8qd+rL2jtSuWPBgmPLbn9ZsAwVrGkYts6SeVigU3MtzTbzvm0RihxGJdXVOoko72ZmcOgoX96IVbdpJpIHySWeJj7GUH+fY7JVeN5N49Ow1oIjHDPcD8we5f3QdB04t89/1O/w1cDnyilFU=",
-    #                 secret="c36cb258c48e9a3a747acd946dd72b21",)
-    # server.run()
     parser = argparse.ArgumentParser()
     parser.add_argument('-cfg', type=str, help='cfg path ', default='./cfg.yaml')
     parser.add_argument('-L', type=str, help='log file', default=None)
