@@ -1,7 +1,9 @@
 azure_endpoint: azure endpoint
 azure_key: AZURE API KEY
 port: 8000
-secret: LINE CHANNEL SECRET
-token: LINE CHANNEL ACCESS TOKEN
+secret: 
+token: 
 url: ''
 weather_api: "WEATHER API KEY"
+CoinMarketCapAPI_KEY : 
+CoinMarketCapAPI_BASE_URL : 
