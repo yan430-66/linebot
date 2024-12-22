@@ -1,12 +1,14 @@
 from .color import C, W
 from .sentiment import Sentiment
 from .weather_api import Weather_clm
+from .coin import CryptoPrice
 
 class Command():
     def __init__(self, 
                  weather_api_key: str):
         self.user_state = {}
         self.weather = Weather_clm(weather_api_key)
+        self.co =  CryptoPrice()
         self.se = Sentiment()
         self.cmd_dic = {
             '/test': [self.test, "discrisption of test"],
@@ -18,6 +20,7 @@ class Command():
             '/ns': [self.nserch, "serch nhentai.net by code"],
             '1': [self.chosise_1, "sentiment command"],
             '/W': [self._weather, "get weather by region and area"],
+            '2': [self.chosise_2, "get coin price by coin symbol"],
                    }
         
         self.cmd_list = list(self.cmd_dic.keys())
@@ -35,6 +38,13 @@ class Command():
     def chosise_1(self,):
         self.user_state[self.user_id] = self.sentiment
         return 'msg', f'請傳送一則訊息讓 module1 判斷。'
+    
+    def chosise_2(self,):
+        self.user_state[self.user_id] = self.coin
+        return 'msg', f'輸入要查詢之加密貨幣(e.g., BTC, ETH): '
+    
+    def coin(self, msg: str):
+        return self.co.display_price(msg)
     
     def sentiment(self, msg: str):
         return self.se.predict_sentiment(msg)
