@@ -12,7 +12,7 @@ from logs.log import Logger, log_pth
 from src.CommandAnalyze import CommandAnalysiser
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
-from linebot.models import MessageEvent, TextMessage, TextSendMessage, ImageMessage, ImageSendMessage
+from linebot.models import MessageEvent, TextMessage, TextSendMessage, ImageMessage, ImageSendMessage, StickerMessage
 from fastapi import FastAPI, Request, HTTPException, APIRouter
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -32,11 +32,14 @@ class Server(CommandAnalysiser):
         elif server_log is None:
             _print(f"log option is {C['dark_blue']}None{W}, will not save log", C['inf'])
 
-        super(CommandAnalysiser, self).__init__(weather_api_key=self.args.weather_api, 
-                                                crypto_base_url=self.args.CoinMarketCapAPI_BASE_URL, 
-                                                crypto_api_key=self.args.CoinMarketCapAPI_KEY,
-                                                cc_api_key=self.args.ExchangeRatesAPI_KEY,
-                                                cc_base_url=self.args.ExchangeRatesAPI_BASE_URL)
+        super(Server, self).__init__(
+            weather_api_key=self.args.weather_api,
+            crypto_base_url=self.args.CoinMarketCapAPI_BASE_URL, 
+            crypto_api_key=self.args.CoinMarketCapAPI_KEY,
+            cc_api_key=self.args.ExchangeRatesAPI_KEY,
+            cc_base_url=self.args.ExchangeRatesAPI_BASE_URL,
+            test_class=5
+        )
         
         self.token = self.args.token
         self.secret = self.args.secret
@@ -157,13 +160,14 @@ class Server(CommandAnalysiser):
             elif response[0] in ['err', 'warn']:
                 _print(f"{response[1]}", state=C[response[0]])
             else:
-                _print(f"Unknown response type: {response[0]}", state=C['err'])
+                _print(f"Unknown response type: {response[0]}😅😅", state=C['err'])
                 _print(f"Response: {response[1]}", state=C['err'])
 
         @self.handler.add(MessageEvent, message=ImageMessage)
         def handle_image_message(event):
             import tempfile
             message_content = self.line_bot_api.get_message_content(event.message.id)
+            _print(f"{C['purple']}Received image message.")
             
             with tempfile.NamedTemporaryFile(dir="./static", delete=False, suffix='.jpg') as tf:
                 for chunk in message_content.iter_content():
@@ -173,6 +177,12 @@ class Server(CommandAnalysiser):
             image_url = f'{self.ngrok_url}/images/{os.path.basename(tempfile_path)}'
             
             self.reply_image(event.reply_token, image_url)
+
+        @self.handler.add(MessageEvent, message=StickerMessage)
+        def handle_sticker_message(event):
+            sticker_id = event.message.sticker_id
+            package_id = event.message.package_id
+            _print(f"{C['magenta']}Received sticker message: sticker_id={sticker_id}, package_id={package_id}")
 
     def send_message(self, message):
         self.line_bot_api.broadcast(TextSendMessage(text=message))

@@ -5,20 +5,9 @@ from .coin import CryptoPrice
 from .currency import CurrencyConverter
 
 class Command():
-    def __init__(self, 
-                 weather_api_key: str,
-                 crypto_api_key: str,
-                 crypto_base_url: str,
-                 cc_api_key: str,
-                 cc_base_url: str):
+    def __init__(self, ):
         
         self.user_state = {}
-        self.crypto_api_key = crypto_api_key
-        self.crypto_base_url = crypto_base_url
-        self.weather = Weather_clm(weather_api_key)
-        self.cc = CurrencyConverter(api_key=cc_api_key, base_url=cc_base_url)
-        self.co =  CryptoPrice(api_key=self.crypto_api_key, base_url=self.crypto_base_url)
-        self.se = Sentiment()
         self.cmd_dic = {
             '/test': [self.test, "discrisption of test"],
             '/test2': [self.test2, "discrisption of test2"],
@@ -94,18 +83,28 @@ class Command():
 
 class CommandAnalysiser(Command):
     def __init__(self, 
-                 weather_api_key: str,):
-        super(Command, self).__init__(weather_api_key-weather_api_key,)
+                 test_class: int,
+                 weather_api_key: str,
+                 crypto_api_key: str,
+                 crypto_base_url: str,
+                 cc_api_key: str,
+                 cc_base_url: str):
+        self.test_class = test_class
+        self.weather = Weather_clm(weather_api_key)
+        self.cc = CurrencyConverter(api_key=cc_api_key, base_url=cc_base_url)
+        self.co =  CryptoPrice(api_key=crypto_api_key, base_url=crypto_base_url)
+        self.se = Sentiment()
+        super().__init__()
 
     def analyze(self, cmd_text: str): 
         cmd_text = cmd_text.strip()
         _print(cmd_text)
         cmd_text, *args = cmd_text.split(' ')
-        _print(f'cmd_text: {cmd_text}, input args: {args}')
+        _print(f'cmd_text: {cmd_text}, input args: {args}', state=C['de'])
         if cmd_text in self.cmd_list:
             return self.execute(cmd_text, *args)
         else:
-            raise Exception(f'Command not found: {cmd_text}')
+            raise Exception(f'Command not found: {cmd_text}😞', )
     
     def execute(self, text: str, *args):
         ex = self.cmd_dic[text][0]
@@ -113,7 +112,7 @@ class CommandAnalysiser(Command):
         try:
             if len(args) > 0:
                 res = ex(*args)
-                _print(f'execute res: {res}')
+                _print(f'execute res: {res}', state=C['de'])
                 return res
             else:
                 return ex()   
@@ -136,7 +135,7 @@ class CommandAnalysiser(Command):
             else:
                 return self.analyze(cmd_text)
         except Exception as e:
-            res = 'err', f'Error: {e}'
+            res = 'err', f'Error: {e}😅'
             return res
         
 def _print(msg: str = '',

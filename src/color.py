@@ -8,6 +8,7 @@ C = {
     'white': '\033[97m',
     'black': '\033[30m',
     'grey': '\033[90m',
+    'purple': '\033[35m',
     'bright_red': '\033[91;1m',
     'bright_green': '\033[92;1m',
     'bright_blue': '\033[94;1m',
