@@ -42,7 +42,7 @@ class CurrencyConverter:
 # Run the script with user input
 if __name__ == "__main__":
     # Initialize the converter
-    converter = CurrencyConverter(api_key="5fdbfe971a2f565358a64543", base_url="https://v6.exchangerate-api.com/v6/5fdbfe971a2f565358a64543")
+    converter = CurrencyConverter(api_key="api key", base_url="api url")
     
     # Get user input in a single line
     user_input = input("Enter the amount and currency conversion (e.g., 100 USD to EUR): ").strip()
