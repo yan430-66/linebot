@@ -7,3 +7,5 @@ url: ''
 weather_api: "WEATHER API KEY"
 CoinMarketCapAPI_KEY : 
 CoinMarketCapAPI_BASE_URL : 
+ExchangeRatesAPI_BASE_URL: https://openexchangerates.org/api
+ExchangeRatesAPI_KEY: "insert your key here"
