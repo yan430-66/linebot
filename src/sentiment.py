@@ -16,6 +16,9 @@ class Sentiment():
                 self.stop_words.add(line.strip())
 
     def predict_sentiment(self, text):
+        if text.isdigit() or all(c in '０１２３４５６７８９' for c in text):
+            return 'msg', "輸入僅包含數字或全形數字，無法進行判斷。"
+        
         text_vectorized = self.vectorizer.transform([text])
         prediction = self.model.predict(text_vectorized)
         sentiment_map = {0: '負面', 1: '中性', 2: '正面'}
