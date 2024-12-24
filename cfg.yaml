@@ -1,18 +1,11 @@
+port: 8000
+secret: "secret"
+token: "token"
 azure_endpoint: azure endpoint
 azure_key: AZURE API KEY
-port: 8000
-secret: 
-token: 
-url: ''
-weather_api: "WEATHER API KEY"
-<<<<<<< HEAD
-CoinMarketCapAPI_KEY: 
-CoinMarketCapAPI_BASE_URL:
-ExchangeRatesAPI_KEY: 
-ExchangeRatesAPI_BASE_URL:
-=======
-CoinMarketCapAPI_KEY : 
-CoinMarketCapAPI_BASE_URL : 
-ExchangeRatesAPI_BASE_URL: https://openexchangerates.org/api
-ExchangeRatesAPI_KEY: "insert your key here"
->>>>>>> 2c7c94cf494550dc5cb78c9fd8144ae54cf59a69
+url: None
+weather_api: "weather_api"
+CoinMarketCapAPI_KEY: "CoinMarketCapAPI_KEY"
+CoinMarketCapAPI_BASE_URL: "https://pro-api.coinmarketcap.com/v1"
+ExchangeRatesAPI_KEY: "ExchangeRatesAPI_KEY"
+ExchangeRatesAPI_BASE_URL: "ExchangeRatesAPI_BASE_URL"
