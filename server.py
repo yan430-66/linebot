@@ -9,7 +9,7 @@ import sys
 import yaml
 from src.color import C, W
 from logs.log import Logger, log_pth
-from src import CommandAnalyze
+from src.CommandAnalyze import CommandAnalysiser
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage, ImageMessage, ImageSendMessage
@@ -17,7 +17,7 @@ from fastapi import FastAPI, Request, HTTPException, APIRouter
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 
-class Server(CommandAnalyze.CommandAnalysiser):
+class Server(CommandAnalysiser):
     def __init__(self, 
                  config_path: str = './cfg.yaml',
                  server_log: str | bool = None):
@@ -32,8 +32,12 @@ class Server(CommandAnalyze.CommandAnalysiser):
         elif server_log is None:
             _print(f"log option is {C['dark_blue']}None{W}, will not save log", C['inf'])
 
-
-        super(CommandAnalyze.CommandAnalysiser, self).__init__(weather_api_key=self.args.weather_api)
+        super(CommandAnalysiser, self).__init__(weather_api_key=self.args.weather_api, 
+                                                crypto_base_url=self.args.CoinMarketCapAPI_BASE_URL, 
+                                                crypto_api_key=self.args.CoinMarketCapAPI_KEY,
+                                                cc_api_key=self.args.ExchangeRatesAPI_KEY,
+                                                cc_base_url=self.args.ExchangeRatesAPI_BASE_URL)
+        
         self.token = self.args.token
         self.secret = self.args.secret
 

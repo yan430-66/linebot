@@ -2,13 +2,22 @@ from .color import C, W
 from .sentiment import Sentiment
 from .weather_api import Weather_clm
 from .coin import CryptoPrice
+from .currency import CurrencyConverter
 
 class Command():
     def __init__(self, 
-                 weather_api_key: str):
+                 weather_api_key: str,
+                 crypto_api_key: str,
+                 crypto_base_url: str,
+                 cc_api_key: str,
+                 cc_base_url: str):
+        
         self.user_state = {}
+        self.crypto_api_key = crypto_api_key
+        self.crypto_base_url = crypto_base_url
         self.weather = Weather_clm(weather_api_key)
-        self.co =  CryptoPrice()
+        self.cc = CurrencyConverter(api_key=cc_api_key, base_url=cc_base_url)
+        self.co =  CryptoPrice(api_key=self.crypto_api_key, base_url=self.crypto_base_url)
         self.se = Sentiment()
         self.cmd_dic = {
             '/test': [self.test, "discrisption of test"],
@@ -21,6 +30,7 @@ class Command():
             '1': [self.chosise_1, "sentiment command"],
             '/W': [self._weather, "get weather by region and area"],
             '2': [self.chosise_2, "get coin price by coin symbol"],
+            '3': [self.chosise_3, "currency converter"],
                    }
         
         self.cmd_list = list(self.cmd_dic.keys())
@@ -33,7 +43,21 @@ class Command():
     def _get_weather(self,
                      region: str,
                      area: str = None):
-        return self.weather.get_weather(region, area=area)  
+        return self.weather.get_weather(region, area=area)
+    
+    def _get_converter(self,
+                       amount: str, 
+                       from_currency: str,
+                       a: str, 
+                       to_currency: str,
+                    ):
+
+        return self.cc.convert_currency(from_currency=from_currency, to_currency=to_currency, a=a, amount=float(amount))
+
+    def chosise_3(self,):
+        self.user_state[self.user_id] = self._get_converter # = {user_id: self._converter}
+        res = 'msg', f'Enter the amount and currency conversion (e.g., 100 USD to EUR): '
+        return res
 
     def chosise_1(self,):
         self.user_state[self.user_id] = self.sentiment
@@ -70,9 +94,8 @@ class Command():
 
 class CommandAnalysiser(Command):
     def __init__(self, 
-                 weather_api_key: str):
-        super().__init__(self, 
-                         weather_api_key)
+                 weather_api_key: str,):
+        super(Command, self).__init__(weather_api_key-weather_api_key,)
 
     def analyze(self, cmd_text: str): 
         cmd_text = cmd_text.strip()

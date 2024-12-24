@@ -5,5 +5,7 @@ secret:
 token: 
 url: ''
 weather_api: "WEATHER API KEY"
-CoinMarketCapAPI_KEY : 
-CoinMarketCapAPI_BASE_URL : 
+CoinMarketCapAPI_KEY: 
+CoinMarketCapAPI_BASE_URL:
+ExchangeRatesAPI_KEY: 
+ExchangeRatesAPI_BASE_URL:

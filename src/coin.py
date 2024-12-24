@@ -2,15 +2,11 @@ import requests
 import yaml
 
 class CryptoPrice:
-    def __init__(self, config_path: str = './cfg.yaml'):
-        config = self.load_config(config_path)
-        self.api_key = config['CoinMarketCapAPI_KEY']
-        self.base_url = config['CoinMarketCapAPI_BASE_URL']
-
-    def load_config(self, config_path: str):
-        with open(config_path, "r", encoding="utf-8") as yaml_file:
-            loaded_config = yaml.safe_load(yaml_file)
-        return loaded_config
+    def __init__(self, 
+                 api_key: str,
+                 base_url: str):
+        self.api_key = api_key
+        self.base_url = base_url
 
     def get_crypto_price(self, coin_symbol: str):
         url = f"{self.base_url}/cryptocurrency/quotes/latest"
@@ -35,4 +31,4 @@ class CryptoPrice:
             price, percent_change_24h = self.get_crypto_price(coin_symbol.upper())
             return 'msg', f"當前價格{coin_symbol.upper()}: ${price}\n24h變化: {percent_change_24h}%"
         except Exception as e:
-            return 'msg', f"Error: {e}"
+            return 'err', f"Error: {e}"
