@@ -21,6 +21,6 @@ class Sentiment():
         
         text_vectorized = self.vectorizer.transform([text])
         prediction = self.model.predict(text_vectorized)
-        sentiment_map = {0: '負面', 1: '中性', 2: '正面'}
+        sentiment_map = {0: '負面', 2: '正面'}
         sentiment = sentiment_map.get(prediction[0], '未知')
         return 'msg', f"模型預測的感情為：{sentiment}"
