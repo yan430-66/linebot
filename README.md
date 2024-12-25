@@ -27,6 +27,5 @@ LINEBOT 萬能工具箱
 > 
 
 - 掃描此QR code，至 LINE APP 中，將機器人加為好友；直接進行對話即可使用。
-  ==LINEID:@289ztwbn==
   ![image](https://github.com/user-attachments/assets/0b7f1691-e3ee-487a-bec4-0e65a55ca1aa)
 
