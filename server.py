@@ -183,6 +183,7 @@ class Server(CommandAnalysiser):
             sticker_id = event.message.sticker_id
             package_id = event.message.package_id
             _print(f"{C['magenta']}Received sticker message: sticker_id={sticker_id}, package_id={package_id}")
+            self.reply_message(event.reply_token, '😅')
 
     def send_message(self, message):
         self.line_bot_api.broadcast(TextSendMessage(text=message))
@@ -199,7 +200,7 @@ class Server(CommandAnalysiser):
     def load_cfg(self, config_path):
         config = yaml.load(open(config_path, 'r', encoding='UTF-8'), Loader=yaml.FullLoader)
         self.args = argparse.Namespace(**config)
-        print('[Debug] [main] | cfg loaded.')
+        _print('config loaded', C['suc'])
 
     def run(self):
         uvicorn.run(self.app, host="127.0.0.1", port=self.port, log_level="info")
