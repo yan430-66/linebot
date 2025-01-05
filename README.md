@@ -29,5 +29,13 @@ LINEBOT 萬能工具箱
 ![image](https://github.com/user-attachments/assets/0b7f1691-e3ee-487a-bec4-0e65a55ca1aa)
 
 ### 機器人功能:
-
-### 程式與目錄說明:
+  -模型預測情緒
+  -加密貨幣價格查詢
+  -匯率轉換
+  -股票價格及近期新聞
+  -爬蟲關鍵字新聞
+  -Youbike站點資訊查詢
+### 功能選單:
+![image](https://github.com/user-attachments/assets/4674e9f7-796a-4a98-bee1-8a418550beef)
+### 功能選單:
+### 公開資料:
