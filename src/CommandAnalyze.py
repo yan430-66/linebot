@@ -3,6 +3,7 @@ from .sentiment import Sentiment
 from .weather_api import Weather_clm
 from .coin import CryptoPrice
 from .currency import CurrencyConverter
+from .stock import Stock
 
 class Command():
     def __init__(self, ):
@@ -20,6 +21,7 @@ class Command():
             '/W': [self._weather, "get weather by region and area"],
             '2': [self.chosise_2, "get coin price by coin symbol"],
             '3': [self.chosise_3, "currency converter"],
+            '4': [self.chosise_4, "stock price by symbol"],
                    }
         
         self.cmd_list = list(self.cmd_dic.keys())
@@ -42,7 +44,7 @@ class Command():
                     ):
 
         return self.cc.convert_currency(from_currency=from_currency, to_currency=to_currency, a=a, amount=float(amount))
-
+                  
     def chosise_3(self,):
         self.user_state[self.user_id] = self._get_converter # = {user_id: self._converter}
         res = 'msg', f'Enter the amount and currency conversion (e.g., 100 USD to EUR): '
@@ -55,12 +57,30 @@ class Command():
     def chosise_2(self,):
         self.user_state[self.user_id] = self.coin
         return 'msg', f'輸入要查詢之加密貨幣(e.g., BTC, ETH): '
-    
+    def chosise_4(self,):
+        self.user_state[self.user_id] = self.get_stock_code
+        return 'msg', f'輸入股票代碼 (如 AAPL, MSFT): ' 
+
     def coin(self, msg: str):
         return self.co.display_price(msg)
     
     def sentiment(self, msg: str):
         return self.se.predict_sentiment(msg)
+
+    def get_stock_code(self, stock_code: str):
+        self.user_state[f"{self.user_id}_stock_code"] = stock_code.strip()
+        self.user_state[self.user_id] = self.get_start_date
+        return 'msg', f'請輸入開始日期 (格式: YYYY-MM-DD):'
+
+    def get_start_date(self, start_date: str):
+        self.user_state[f"{self.user_id}_start_date"] = start_date.strip()
+        self.user_state[self.user_id] = self.get_end_date
+        return 'msg', f'請輸入結束日期 (格式: YYYY-MM-DD):'
+
+    def get_end_date(self, end_date: str):
+        stock_code = self.user_state.pop(f"{self.user_id}_stock_code")
+        start_date = self.user_state.pop(f"{self.user_id}_start_date")
+        return self.st.display_stock_info(stock_code=stock_code, start_date_input=start_date, end_date_input=end_date.strip())
 
     def nserch(self, text: str, *args):
         return 'msg', f'https://nhentai.net/g/{text}/'
@@ -94,6 +114,7 @@ class CommandAnalysiser(Command):
         self.cc = CurrencyConverter(api_key=cc_api_key, base_url=cc_base_url)
         self.co =  CryptoPrice(api_key=crypto_api_key, base_url=crypto_base_url)
         self.se = Sentiment()
+        self.st = Stock()
         super().__init__()
 
     def analyze(self, cmd_text: str): 
