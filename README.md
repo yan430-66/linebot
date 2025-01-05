@@ -37,5 +37,7 @@ LINEBOT 萬能工具箱
 ###  6. Youbike站點資訊查詢
 ## 功能選單:
 ![image](https://github.com/user-attachments/assets/4674e9f7-796a-4a98-bee1-8a418550beef)
-## 功能選單:
+## 功能實際執行:
+![image](https://github.com/user-attachments/assets/809cd6c8-fff9-442a-8893-5198228eb6c1)
+
 ## 公開資料:
