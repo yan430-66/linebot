@@ -38,6 +38,8 @@ class Server(CommandAnalysiser):
             crypto_api_key=self.args.CoinMarketCapAPI_KEY,
             cc_api_key=self.args.ExchangeRatesAPI_KEY,
             cc_base_url=self.args.ExchangeRatesAPI_BASE_URL,
+            news_api_key= self.args.Catch_NewsAPI_Key,
+            news_base_url= self.args.Catch_NewsAPI_BASE_URL,
             test_class=5
         )
         

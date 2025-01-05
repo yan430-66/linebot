@@ -4,7 +4,7 @@ from .weather_api import Weather_clm
 from .coin import CryptoPrice
 from .currency import CurrencyConverter
 from .stock import Stock
-
+from .news import catch_news
 class Command():
     def __init__(self, ):
         
@@ -22,6 +22,7 @@ class Command():
             '2': [self.chosise_2, "get coin price by coin symbol"],
             '3': [self.chosise_3, "currency converter"],
             '4': [self.chosise_4, "stock price by symbol"],
+            '5': [self.chosise_5, "news :D"],
                    }
         
         self.cmd_list = list(self.cmd_dic.keys())
@@ -60,6 +61,31 @@ class Command():
     def chosise_4(self,):
         self.user_state[self.user_id] = self.get_stock_code
         return 'msg', f'輸入股票代碼 (如 AAPL, MSFT): ' 
+    
+    def chosise_5(self,):
+        self.user_state[self.user_id] = self.get_query
+        return 'msg', f"請輸入要查詢的關鍵字:"
+    
+    def get_query(self, query: str):
+        self.user_state[f"{self.user_id}_query"] = query.strip()
+        self.user_state[self.user_id] = self.get_language
+        return 'msg', f"請輸入搜尋語言 (預設 zh): " or 'zh'
+    
+    def get_language(self, language: str):
+        self.user_state[f"{self.user_id}_language"] = language.strip()
+        self.user_state[self.user_id] = self.get_from_date
+        return 'msg', f"請輸入要搜尋的起始日期（格式: YYYY-MM-DD）"
+    
+    def get_from_date(self, from_date: str):
+        self.user_state[f"{self.user_id}_from_date"] = from_date.strip()
+        self.user_state[self.user_id] = self.get_to_date
+        return 'msg' , f"請輸入要搜尋的結束日期（格式: YYYY-MM-DD）"
+
+    def get_to_date(self, to_date:str):
+        query = self.user_state.pop(f"{self.user_id}_query")
+        language = self.user_state.pop(f"{self.user_id}_language")
+        from_date = self.user_state.pop(f"{self.user_id}_from_date")
+        return self.ct.display_news(query = query, language = language , from_date_input = from_date, to_date_input = to_date.strip())
 
     def coin(self, msg: str):
         return self.co.display_price(msg)
@@ -108,13 +134,17 @@ class CommandAnalysiser(Command):
                  crypto_api_key: str,
                  crypto_base_url: str,
                  cc_api_key: str,
-                 cc_base_url: str):
+                 cc_base_url: str,
+                 news_api_key:str,
+                 news_base_url:str
+                 ):
         self.test_class = test_class
         self.weather = Weather_clm(weather_api_key)
         self.cc = CurrencyConverter(api_key=cc_api_key, base_url=cc_base_url)
         self.co =  CryptoPrice(api_key=crypto_api_key, base_url=crypto_base_url)
         self.se = Sentiment()
         self.st = Stock()
+        self.ct = catch_news(api_key=news_api_key, base_url= news_base_url)
         super().__init__()
 
     def analyze(self, cmd_text: str): 
