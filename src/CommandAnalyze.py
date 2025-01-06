@@ -52,7 +52,7 @@ class Command():
 
     def chosise_1(self,):
         self.user_state[self.user_id] = self.sentiment
-        return 'msg', f'請傳送一則訊息讓 module1 判斷。'
+        return 'msg', f'請傳送一則訊息讓 情感預測模型 判斷。'
     
     def chosise_2(self,):
         self.user_state[self.user_id] = self.coin
@@ -72,7 +72,7 @@ class Command():
         return 'msg', f"請輸入要查詢的關鍵字:"
     def chosise_6(self):
         self.user_state[self.user_id] = self.get_youbike_region
-        return 'msg', '請輸入地區名稱(e.g.,台北):'
+        return 'msg', '請輸入縣市名稱(e.g.,台北):'
 
     def get_youbike_region(self, region: str):
         self.user_state[f"{self.user_id}_region"] = region.strip()
