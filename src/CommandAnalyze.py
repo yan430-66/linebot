@@ -46,10 +46,7 @@ class Command():
 
         return self.cc.convert_currency(from_currency=from_currency, to_currency=to_currency, a=a, amount=float(amount))
                   
-    def chosise_3(self,):
-        self.user_state[self.user_id] = self._get_converter # = {user_id: self._converter}
-        res = 'msg', f'Enter the amount and currency conversion (e.g., 100 USD to EUR): '
-        return res
+    
 
     def chosise_1(self,):
         self.user_state[self.user_id] = self.sentiment
@@ -58,6 +55,12 @@ class Command():
     def chosise_2(self,):
         self.user_state[self.user_id] = self.coin
         return 'msg', f'輸入要查詢之加密貨幣(e.g., BTC, ETH): '
+
+    def chosise_3(self,):
+        self.user_state[self.user_id] = self._get_converter # = {user_id: self._converter}
+        res = 'msg', f'Enter the amount and currency conversion (e.g., 100 USD to EUR): '
+        return res
+        
     def chosise_4(self,):
         self.user_state[self.user_id] = self.get_stock_code
         return 'msg', f'輸入股票代碼 (如 AAPL, MSFT): ' 
