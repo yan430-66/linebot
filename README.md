@@ -32,12 +32,30 @@ LINEBOT 萬能工具箱
 ###  1. 模型預測情緒
 ###  2. 加密貨幣價格查詢
 ###  3. 匯率轉換
-###  4. 股票價格及近期新聞
+###  4. 股票價格
 ###  5. 爬蟲關鍵字新聞
 ###  6. Youbike站點資訊查詢
 ## 功能選單:
-![image](https://github.com/user-attachments/assets/4674e9f7-796a-4a98-bee1-8a418550beef)
+![image](https://github.com/user-attachments/assets/e1e12253-75a1-4882-8fd7-b79ab2422379)
 ## 功能實際執行:
-![image](https://github.com/user-attachments/assets/809cd6c8-fff9-442a-8893-5198228eb6c1)
+###  功能1. 模型預測情緒:
+
+<img src="https://github.com/user-attachments/assets/ab03de2b-4fac-4b2e-b56e-3485257562ad" width="500">
+
+###  功能2. 加密貨幣價格查詢
+
+<img src="https://github.com/user-attachments/assets/809cd6c8-fff9-442a-8893-5198228eb6c1" width="500">
+
+###  功能3. 匯率轉換
+
+<img src="https://github.com/user-attachments/assets/62a5dc72-b5b7-47f7-a0ea-3cf6024b2c5a" width="500">
+
+###  功能4. 股票價格
+
+<img src="https://github.com/user-attachments/assets/a693ebf9-3b53-44cb-aa3d-4ddb0462c25a" width="500">
+
+###  功能5. 爬蟲關鍵字新聞
+
+<img src="https://github.com/user-attachments/assets/3bfe4fed-9982-4c5f-9c9f-ecf6ef79f246" width="500">
 
 ## 公開資料:
