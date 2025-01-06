@@ -1,10 +1,16 @@
-import pandas as pd
 import requests
+import pandas as pd
 import csv
-import os
 from urllib.parse import quote
+
 class YouBike:
     def __init__(self):
+        self.api_url = "https://apis.youbike.com.tw/json/station-yb2.json"
+        self.base_url = "https://www.google.com/maps/search/"
+        self.headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
+        }
+        self.csv_file = "youbike_stations.csv"
         self.area_code_mapping = {
             '00': '台北',
             '0A': '苗栗',
@@ -20,103 +26,86 @@ class YouBike:
             '14': '屏東縣',
             '10': '新竹科學園區',
         }
-        self.url = "https://apis.youbike.com.tw/json/station-yb2.json"
-        self.headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
-        }
-        self.csv_file = f"youbike_stations.csv"
 
-    def get_area_code(self, city_name):
-        for code, name in self.area_code_mapping.items():
-            if name == city_name:
-                return code
-        return None
-
-    def get_youbike_data(self, city_name):
-        response = requests.get(self.url, headers=self.headers)
-
-        # 檢查請求是否成功
+    def fetch_youbike_data(self):
+        response = requests.get(self.api_url, headers=self.headers)
         if response.status_code == 200:
             try:
-                data = response.json()
+                return 'msg', response.json()
             except ValueError as e:
-                print(f"解析 JSON 資料時出現錯誤: {e}")
-                data = []
+                return 'err', f"解析 JSON 資料時出現錯誤: {e}"
         else:
-            print(f"請求失敗，狀態碼: {response.status_code}")
-            data = []
+            return 'err', f"請求失敗，狀態碼: {response.status_code}"
 
-        if data:
-            area_code = self.get_area_code(city_name)
-            if area_code:
-                filtered_data = [station for station in data if station.get('area_code') == area_code]
+    def parse_area_input(self, input_value: str):
+        return input_value.strip()
 
-                if filtered_data:
-                    
-                    fieldnames = filtered_data[0].keys()
+    def filter_data_by_region_area(self, data, region: str, area: str):
+        area_code = self.get_area_code(region)
+        if not area_code:
+            return 'err', f"找不到對應的地區代碼: {region}"
 
-                    # 寫入 CSV 檔案
-                    with open(self.csv_file, mode='w', newline='', encoding='utf-8') as file:
-                        writer = csv.DictWriter(file, fieldnames=fieldnames)
-                        writer.writeheader()
-                        for station in filtered_data:
-                            writer.writerow(station)
+        filtered_data = [station for station in data if station.get('area_code') == area_code and station.get('district_tw') == area]
+        if not filtered_data:
+            return 'err', "沒有符合條件的資料"
 
-                    print(f"資料已成功寫入 {self.csv_file}")
+        return 'msg', filtered_data
 
-                else:
-                    print("沒有符合條件的資料")
-            else:
-                print(f"找不到對應的地區代碼: {city_name}")
-        else:
-            print("沒有可用的資料來生成 CSV 檔案")
+    def display_stations_by_area(self, city_name: str, area: str):
+        fetch_status, data = self.fetch_youbike_data()
+        if fetch_status == 'err':
+            return 'err', data
 
-    # 定義將地址轉換為 Google Maps URL 的函數
-    def address_to_google_maps_url(address):
-        base_url = "https://www.google.com/maps/search/"
+        filter_status, filtered_data = self.filter_data_by_region_area(data, city_name, area)
+        if filter_status == 'err':
+            return 'err', filtered_data
+
+        station_names = [station.get('name_tw', '未知站點') for station in filtered_data]
+        if station_names:
+            message = f"區域 {area} 的所有站點名稱如下:\n" + "\n".join(station_names)
+            return 'msg', message
+        return 'err', f"找不到區域 {area} 的站點資料"
+
+    def display_station_info(self, city_name: str, area: str, station: str):
+        fetch_status, data = self.fetch_youbike_data()
+        if fetch_status == 'err':
+            return 'err', data
+
+        filter_status, filtered_data = self.filter_data_by_region_area(data, city_name, area)
+        if filter_status == 'err':
+            return 'err', filtered_data
+
+        for station_data in filtered_data:
+            if station_data.get('name_tw') == station:
+                available_spaces = station_data.get('available_spaces', '無資料')
+                address = station_data.get('address_tw', '無地址')
+                google_maps_link = "https://www.google.com/maps/search/?api=1&query="+address
+                message = (
+                    f"站點名稱: {station}\n"
+                    f"可用數量: {available_spaces}\n"
+                    f"地址: {address}\n"
+                    f"📍Google Maps 鏈結: {google_maps_link}"
+                )
+                return 'msg', message
+
+        return 'err', f"找不到站點 {station}"
+
+    def get_area_code(self, city_name):
+        return next((code for code, name in self.area_code_mapping.items() if name == city_name), None)
+
+    def address_to_google_maps_url(self, address):
         encoded_address = quote(address)
-        full_url = f"{base_url}{encoded_address}"
-        return full_url
-    
-    def get_station_csv(self, district_tw_input):
-        res = ''
-        self.district_tw_input = district_tw_input
-        # 讀取 CSV 檔案
-        df = pd.read_csv(self.csv_file)
-        # 假設 CSV 檔案中有 'district_tw', 'name_tw', 'available_spaces' 和 'address_tw' 四個欄位
-        stations = df[['district_tw', 'name_tw', 'available_spaces', 'address_tw']]
-        # 查找並顯示該區域的所有站點名稱
-        self.district_stations = stations[stations['district_tw'] == district_tw_input]
-        if not self.district_stations.empty:
-            res += f"區域 {self.district_tw_input} 的所有站點名稱如下: "
-            district_tw_input = self.district_stations
-            for name in district_tw_input['name_tw']:
-                res += f'{name}\n '
-        return 'msg', res
-
-    def get_station_info(self, name_tw_input):
-        res = ''
-        if not self.district_stations.empty:
-            station_info = self.district_stations[self.district_stations['name_tw'] == name_tw_input]
-            if not station_info.empty:
-                available_spaces = station_info.iloc[0]['available_spaces']
-                address_tw = station_info.iloc[0]['address_tw']
-                google_maps_link = self.address_to_google_maps_url(address_tw)
-                res += f" {name_tw_input} 的可用數量為: {available_spaces}"
-                res += f"Google Maps 鏈結: {google_maps_link}"
-                return 'msg', res
-            else:
-                res += f"找不到站點 {name_tw_input}"
-                return 'msg', res
-        else:
-            res += f"找不到區域 {self.district_tw_input}"
-            return 'msg', res
-
+        return f"{self.base_url}{encoded_address}"
 
 if __name__ == "__main__":
     youbike = YouBike()
-    youbike.get_youbike_data("台北")
-    res1, res2 = youbike.get_station_csv("信義區")
-    print(res2)
-    r1, r2 = youbike.get_station_info("信義區")
-    print(r2)
+
+    region = "台北"
+    area = "信義區"
+
+    res_type, res_message = youbike.display_stations_by_area(region, area)
+    print(res_message)
+
+    station_name = "市府轉運站"
+    res_type, res_message = youbike.display_station_info(region, area, station_name)
+    print(res_message)
