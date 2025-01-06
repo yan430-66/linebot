@@ -40,6 +40,7 @@ LINEBOT 工具箱
 ![image](https://github.com/user-attachments/assets/e1e12253-75a1-4882-8fd7-b79ab2422379)
 ## 功能實際執行:
 ###  功能1. 模型預測情緒:
+>有兩個version，第2個version :https://drive.google.com/drive/folders/1W_ggfWMN4e89t3mBuKM28m_Z1QKPwk3B?usp=drive_link
 ![image](https://github.com/user-attachments/assets/8b3f2cab-3677-4a6d-ad83-c5d8a71f8b51)
 ###  功能2. 加密貨幣價格查詢
 ![image](https://github.com/user-attachments/assets/d05e48c1-6d42-450c-8d3f-7be4e1bc3576)
