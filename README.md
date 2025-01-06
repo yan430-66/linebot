@@ -39,23 +39,14 @@ LINEBOT 萬能工具箱
 ![image](https://github.com/user-attachments/assets/e1e12253-75a1-4882-8fd7-b79ab2422379)
 ## 功能實際執行:
 ###  功能1. 模型預測情緒:
-
-<img src="https://github.com/user-attachments/assets/ab03de2b-4fac-4b2e-b56e-3485257562ad" width="500">
-
+![image](https://github.com/user-attachments/assets/4accf3fd-721c-48d6-8866-6d3d114209ba)
 ###  功能2. 加密貨幣價格查詢
-
-<img src="https://github.com/user-attachments/assets/809cd6c8-fff9-442a-8893-5198228eb6c1" width="500">
-
+![image](https://github.com/user-attachments/assets/d05e48c1-6d42-450c-8d3f-7be4e1bc3576)
 ###  功能3. 匯率轉換
-
-<img src="https://github.com/user-attachments/assets/62a5dc72-b5b7-47f7-a0ea-3cf6024b2c5a" width="500">
-
+![image](https://github.com/user-attachments/assets/f937f5be-1486-4aea-a742-64acce12abcc)
 ###  功能4. 股票價格
-
-<img src="https://github.com/user-attachments/assets/a693ebf9-3b53-44cb-aa3d-4ddb0462c25a" width="500">
-
+![image](https://github.com/user-attachments/assets/49b474b8-6c27-4724-8796-c5b3aa8996e4)
 ###  功能5. 爬蟲關鍵字新聞
-
-<img src="https://github.com/user-attachments/assets/3bfe4fed-9982-4c5f-9c9f-ecf6ef79f246" width="500">
+![image](https://github.com/user-attachments/assets/a7342a1b-8fef-47fc-8abb-fdd5cb5610af)
 
 ## 公開資料:
