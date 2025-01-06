@@ -35,6 +35,7 @@ LINEBOT 工具箱
 ###  4. 股票價格
 ###  5. 爬蟲關鍵字新聞
 ###  6. Youbike站點資訊查詢
+###  7. 天氣資訊查詢
 ## 功能選單:
 ![image](https://github.com/user-attachments/assets/e1e12253-75a1-4882-8fd7-b79ab2422379)
 ## 功能實際執行:
@@ -48,8 +49,14 @@ LINEBOT 工具箱
 ![image](https://github.com/user-attachments/assets/49b474b8-6c27-4724-8796-c5b3aa8996e4)
 ###  功能5. 爬蟲關鍵字新聞
 ![image](https://github.com/user-attachments/assets/a7342a1b-8fef-47fc-8abb-fdd5cb5610af)
+###  功能6. Youbike站點資訊查詢
+![image](https://github.com/user-attachments/assets/7166192c-eb31-4cc3-a640-1a4954bfcb04)
+![image](https://github.com/user-attachments/assets/43e45d4d-59bd-469f-9afd-5f741e6e84de)
+###  功能7. 天氣資訊查詢
+![image](https://github.com/user-attachments/assets/827bcac8-be54-4897-a61a-62c11bb0f7fc)
 
 ## 公開資料:
 ### CoinMarketCap:https://coinmarketcap.com/
 ### xe:https://www.xe.com/currencyconverter/
 ### News API:https://newsapi.org/
+### 交通部中央氣象屬:https://www.cwa.gov.tw/V8/C/W/OBS_Map.html
