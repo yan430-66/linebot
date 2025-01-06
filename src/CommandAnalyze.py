@@ -5,6 +5,7 @@ from .coin import CryptoPrice
 from .currency import CurrencyConverter
 from .stock import Stock
 from .news import catch_news
+from .youbike import YouBike
 class Command():
     def __init__(self, ):
         
@@ -23,6 +24,7 @@ class Command():
             '3': [self.chosise_3, "currency converter"],
             '4': [self.chosise_4, "stock price by symbol"],
             '5': [self.chosise_5, "news :D"],
+            '6': [self.chosise_6, "Youbike station"],
                    }
         
         self.cmd_list = list(self.cmd_dic.keys())
@@ -46,7 +48,7 @@ class Command():
 
         return self.cc.convert_currency(from_currency=from_currency, to_currency=to_currency, a=a, amount=float(amount))
                   
-    
+   
 
     def chosise_1(self,):
         self.user_state[self.user_id] = self.sentiment
@@ -68,7 +70,30 @@ class Command():
     def chosise_5(self,):
         self.user_state[self.user_id] = self.get_query
         return 'msg', f"請輸入要查詢的關鍵字:"
-    
+    def chosise_6(self):
+        self.user_state[self.user_id] = self.get_youbike_region
+        return 'msg', '請輸入地區名稱(e.g.,台北):'
+
+    def get_youbike_region(self, region: str):
+        self.user_state[f"{self.user_id}_region"] = region.strip()
+        self.user_state[self.user_id] = self.get_youbike_area
+        return 'msg', '請輸入查詢區域(e.g.,信義區):'
+
+    def get_youbike_area(self, area: str):
+        region = self.user_state[f"{self.user_id}_region"]
+        self.user_state[f"{self.user_id}_area"] = area.strip()
+        res_type, res_message = self.yb.display_stations_by_area(city_name=region, area=area.strip())
+        if res_type == 'err':
+            return 'err', res_message
+
+        self.user_state[self.user_id] = self.get_youbike_station
+        return 'msg', f"{res_message}\n\n請輸入查詢之站點:"
+
+    def get_youbike_station(self, station: str):
+        region = self.user_state.pop(f"{self.user_id}_region")
+        area = self.user_state.pop(f"{self.user_id}_area")
+        return self.yb.display_station_info(city_name=region, area=area, station=station.strip())
+
     def get_query(self, query: str):
         self.user_state[f"{self.user_id}_query"] = query.strip()
         self.user_state[self.user_id] = self.get_language
@@ -148,6 +173,7 @@ class CommandAnalysiser(Command):
         self.se = Sentiment()
         self.st = Stock()
         self.ct = catch_news(api_key=news_api_key, base_url= news_base_url)
+        self.yb = YouBike()
         super().__init__()
 
     def analyze(self, cmd_text: str): 
