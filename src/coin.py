@@ -33,6 +33,6 @@ class CryptoPrice:
         try:
             price, percent_change_24h = self.get_crypto_price(coin_symbol.upper())
             #回傳
-            return 'msg', f"當前價格{coin_symbol.upper()}: ${price}\n24h變化: {percent_change_24h}%"
+            return 'msg', f"💰當前價格{coin_symbol.upper()}: ${price}\n⏰24h變化: {percent_change_24h}%"
         except Exception as e:
             return 'err', f"Error: {e}"
