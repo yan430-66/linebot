@@ -1,6 +1,6 @@
 程式設計期末報告
 ===
-LINEBOT 萬能工具箱
+LINEBOT 工具箱
 ---
 ## 組員:
 >C112156118 楊睿宏
@@ -50,3 +50,6 @@ LINEBOT 萬能工具箱
 ![image](https://github.com/user-attachments/assets/a7342a1b-8fef-47fc-8abb-fdd5cb5610af)
 
 ## 公開資料:
+### CoinMarketCap:https://coinmarketcap.com/
+### xe:https://www.xe.com/currencyconverter/
+### News API:https://newsapi.org/
