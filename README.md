@@ -45,6 +45,7 @@ clone https://github.com/yan430-66/linebot
 ```
 python -m venv myenv
 myenv\Scripts\activate
+python.exe -m pip install --upgrade pip
 pip install requirements.txt
 python start.py -cfg ./cfg.yaml
 # or open in debug mode
