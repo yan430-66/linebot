@@ -81,7 +81,7 @@ python start.py -debug
 ###  功能7. 天氣資訊查詢
 ![image](https://github.com/user-attachments/assets/827bcac8-be54-4897-a61a-62c11bb0f7fc)
 
-##安裝方法
+
 ## 公開資料:
 ### CoinMarketCap:https://coinmarketcap.com/
 ### xe:https://www.xe.com/currencyconverter/
