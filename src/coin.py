@@ -19,10 +19,13 @@ class CryptoPrice:
             try:
                 # 獲取幣種現在的價格
                 coin_data = data["data"][coin_symbol]["quote"]["USD"]
+
                 #四捨五入到小數點後兩位
                 price = round(coin_data["price"], 2)
+
                 # 獲取24小時變化百分比並四捨五入到小數點後兩位
                 percent_change_24h = round(coin_data["percent_change_24h"], 2)
+                
                 return price, percent_change_24h
             except KeyError:
                 raise Exception(f"KeyError: Coin symbol {coin_symbol} not found in response.")
