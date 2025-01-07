@@ -6,3 +6,8 @@ ngrok.exe
 static/*.jpg
 static/*.png
 logs/*.log
+src/models/*.pt
+src/models/*.safetensors
+src/models/*.pth
+src/models/*.bin
+src/models/*.txt
