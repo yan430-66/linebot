@@ -2,7 +2,7 @@ from transformers import BertForSequenceClassification, BertTokenizer
 import torch
 
 class Sentiment:
-    def __init__(self, model_path: str = './src/models/checkpoint-25545'):
+    def __init__(self, model_path: str = './src/models'):
 
         self.model = BertForSequenceClassification.from_pretrained(model_path)
         self.tokenizer = BertTokenizer.from_pretrained(model_path)
