@@ -9,7 +9,7 @@ LINEBOT 工具箱
 >
 >C112156148 顏岑光
 >
->C112156151林峰
+>C112156151 林  峰
 >
 
 ## 簡介:
@@ -87,3 +87,9 @@ python start.py -debug
 ### xe:https://www.xe.com/currencyconverter/
 ### News API:https://newsapi.org/
 ### 交通部中央氣象屬:https://www.cwa.gov.tw/V8/C/W/OBS_Map.html
+
+## 分工:
+### 楊睿宏 : 整體框架、邏輯建構、天氣功能
+### 陳孟暄 : 情感分析功能、情感分析模型、股票查詢功能、新聞抓取50%
+### 顏岑光 : 加密貨幣價格查詢、Youbike站點資訊查詢、圖文選單、readme.md
+### 林  峰 : 匯率轉換功能、新聞抓取50%、rq.txt
