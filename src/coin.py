@@ -9,6 +9,13 @@ class CryptoPrice:
         self.base_url = base_url
 
     def get_crypto_price(self, coin_symbol: str):
+         """
+        獲取指定加密貨幣的價格及 24 小時變化百分比。
+
+        :param coin_symbol: 幣種的符號，例如 "BTC" 或 "ETH"
+        :return: 返回價格和 24 小時變化百分比
+        :raises Exception: 如果請求失敗或數據解析錯誤則拋出異常
+        """
         url = f"{self.base_url}/cryptocurrency/quotes/latest"
         headers = {"X-CMC_PRO_API_KEY": self.api_key}
         params = {"symbol": coin_symbol, "convert": "USD"}
@@ -33,6 +40,12 @@ class CryptoPrice:
             raise Exception(f"Fail to get crypto data: {response.status_code}, {response.text}")
 
     def display_price(self, coin_symbol: str):
+         """
+        生成包含幣種價格和 24 小時變化的消息。
+
+        :param coin_symbol: 幣種的符號，例如 "BTC" 或 "ETH"
+        :return: 返回一個元組，其中第一個值是消息類型（'msg' 或 'err'），第二個值是消息內容
+        """
         try:
             price, percent_change_24h = self.get_crypto_price(coin_symbol.upper())
             #回傳
