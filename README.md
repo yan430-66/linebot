@@ -28,10 +28,29 @@ LINEBOT 工具箱
 - 掃描此QR code，至 LINE APP 中，將機器人加為好友；直接進行對話即可使用。
 ![image](https://github.com/user-attachments/assets/0b7f1691-e3ee-487a-bec4-0e65a55ca1aa)
 
-## 部屬方式:
+## 自行架設:
+> [!NOTE]  
+> 事前準備
+>
+> 需準備 Github、公開資料相關網站、Line Developers 帳號。
+> 
+> 複製項目地址
 ```bash
-clone 
+clone https://github.com/yan430-66/linebot
 ```
+### 將cfg.yaml內對應之
+>將API放入cfg.yaml
+### python 安裝
+>python 虛擬環境 建議python 版本 > 10
+```
+python -m venv myenv
+myenv\Scripts\activate
+pip install requirements.txt
+python start.py -cfg ./cfg.yaml
+# or open in debug mode
+python start.py -debug
+```
+
 ## 機器人功能:
 ###  1. 模型預測情緒
 ###  2. 加密貨幣價格查詢
@@ -61,7 +80,7 @@ clone
 ###  功能7. 天氣資訊查詢
 ![image](https://github.com/user-attachments/assets/827bcac8-be54-4897-a61a-62c11bb0f7fc)
 
-
+##安裝方法
 ## 公開資料:
 ### CoinMarketCap:https://coinmarketcap.com/
 ### xe:https://www.xe.com/currencyconverter/
