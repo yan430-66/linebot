@@ -28,6 +28,10 @@ LINEBOT 工具箱
 - 掃描此QR code，至 LINE APP 中，將機器人加為好友；直接進行對話即可使用。
 ![image](https://github.com/user-attachments/assets/0b7f1691-e3ee-487a-bec4-0e65a55ca1aa)
 
+## 部屬方式:
+```bash
+clone 
+```
 ## 機器人功能:
 ###  1. 模型預測情緒
 ###  2. 加密貨幣價格查詢
@@ -37,7 +41,7 @@ LINEBOT 工具箱
 ###  6. Youbike站點資訊查詢
 ###  7. 天氣資訊查詢
 ## 功能選單:
-![image](https://github.com/user-attachments/assets/e1e12253-75a1-4882-8fd7-b79ab2422379)
+![image](https://github.com/user-attachments/assets/c9744738-0569-41c5-ae16-d16f74c46f16)
 ## 功能實際執行:
 ###  功能1. 模型預測情緒:
 >有兩個version，第2個version :https://drive.google.com/drive/folders/1W_ggfWMN4e89t3mBuKM28m_Z1QKPwk3B?usp=drive_link
@@ -56,6 +60,7 @@ LINEBOT 工具箱
 ![image](https://github.com/user-attachments/assets/43e45d4d-59bd-469f-9afd-5f741e6e84de)
 ###  功能7. 天氣資訊查詢
 ![image](https://github.com/user-attachments/assets/827bcac8-be54-4897-a61a-62c11bb0f7fc)
+
 
 ## 公開資料:
 ### CoinMarketCap:https://coinmarketcap.com/
