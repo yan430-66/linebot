@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+line-bot-sdk
+gradio
+pyyaml
+joblib
+yfinance
+pandas
+torch
+gradio_log
+scikit-learn
+transformers
